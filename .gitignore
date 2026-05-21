@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.Sorting_Agent/
+.venv/
+venv/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# uv
+uv.lock
+
+# Project runtime dirs (keep dirs, ignore contents)
+excel-agent/uploads/*
+excel-agent/outputs/*
+excel-agent/data/*
+!excel-agent/uploads/.gitkeep
+!excel-agent/outputs/.gitkeep
+!excel-agent/data/.gitkeep
+
+# MCP server log
+excel-mcp.log

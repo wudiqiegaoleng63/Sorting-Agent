@@ -1,0 +1,28 @@
+from fastapi import APIRouter, Request
+
+from app.schemas.agent_schema import AgentRunRequest, AgentRunResponse, MCPToolInfo, MCPToolsResponse
+from app.services.agent_service import run_agent
+
+router = APIRouter(prefix="/api/agent", tags=["agent"])
+
+
+@router.post("/run", response_model=AgentRunResponse)
+async def agent_run(req: AgentRunRequest):
+    return await run_agent(req)
+
+
+@router.get("/tools", response_model=MCPToolsResponse)
+async def list_mcp_tools(request: Request):
+    mcp_client = request.app.state.mcp_client
+    if not mcp_client.connected:
+        return MCPToolsResponse(
+            connected=False,
+            tools=[],
+            error="MCP server not connected. Check that excel-mcp-server is running.",
+        )
+
+    tools = [
+        MCPToolInfo(name=t["name"], description=t["description"], input_schema=t["inputSchema"])
+        for t in mcp_client.tools
+    ]
+    return MCPToolsResponse(connected=True, tools=tools)

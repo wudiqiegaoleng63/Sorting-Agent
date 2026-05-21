@@ -12,15 +12,15 @@ class Settings(BaseSettings):
     uploads_dir: Path = base_dir / "uploads"
     outputs_dir: Path = base_dir / "outputs"
 
-    # excel-mcp-server — started via uvx
-    mcp_server_command: str = "uvx"
-    mcp_server_args: list[str] = ["excel-mcp-server", "stdio"]
-    mcp_server_env: dict[str, str] = {}
+    # LLM (OpenAI-compatible)
+    model_name: str = "deepseek-chat"
+    model_api_key: str = ""
+    model_base_url: str = "https://api.deepseek.com"
 
-    # LLM
-    llm_model: str = "gpt-4o-mini"
-    llm_api_key: str = ""
-    llm_base_url: str | None = None
+    # excel-mcp-server
+    mcp_excel_command: str = "uvx"
+    mcp_excel_args: list[str] = ["excel-mcp-server", "stdio"]
+    mcp_excel_env: dict[str, str] = {}
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 

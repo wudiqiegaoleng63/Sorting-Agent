@@ -234,19 +234,11 @@ body {
   opacity: 0.85;
 }
 
-.msg-loading {
-  color: #6b7280;
-  font-size: 0.85rem;
-}
-
-.dot-pulse {
-  display: inline-block;
-  animation: pulse 1.2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+.msg-loading-hint {
+  color: #9ca3af;
+  font-size: 0.8rem;
+  margin-top: 6px;
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 .msg-error {
@@ -297,12 +289,26 @@ body {
   color: #374151;
 }
 
+.step-running-badge {
+  font-size: 0.7rem;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 1px 6px;
+  border-radius: 3px;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
 .step-tool-badge {
   font-size: 0.75rem;
   color: #b45309;
   background: #fef3c7;
   padding: 1px 6px;
   border-radius: 3px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 .step-content {

@@ -1,31 +1,26 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import ChatLayout from './components/ChatLayout';
 import Sidebar from './components/Sidebar';
 import ChatMessages from './components/ChatMessages';
 import ChatInput from './components/ChatInput';
 import { runAgent } from './api/agentApi';
 import { genId } from './utils/id';
-import type { ChatMessage, UploadedFile, AgentStep } from './types/agent';
-
-const PENDING_STEPS: AgentStep[] = [
-  { type: 'analysis', title: '正在分析任务', content: 'Agent 正在理解你的需求', status: 'running' },
-  { type: 'tool_selection', title: '正在选择工具', content: 'Agent 将根据 MCP 工具描述选择合适的 Excel 工具', status: 'pending' },
-  { type: 'tool_execution', title: '正在执行工具', content: '等待工具调用结果', status: 'pending' },
-  { type: 'final', title: '正在生成回复', content: '整理最终回答', status: 'pending' },
-];
-
-function fallbackSteps(task: string, answer: string): AgentStep[] {
-  return [
-    { type: 'input', title: '任务提交', content: task, status: 'success' },
-    { type: 'final', title: 'Agent 执行完成', content: answer, status: 'success' },
-  ];
-}
+import { createFakeSteps, advanceFakeSteps, markLastStepError, fallbackSteps } from './utils/fakeSteps';
+import type { ChatMessage, UploadedFile } from './types/agent';
 
 export default function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
   const [loading, setLoading] = useState(false);
+  const timerRef = useRef<number | null>(null);
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current !== null) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
 
   const handleSend = async (task: string) => {
     // 1. Add user message
@@ -37,13 +32,13 @@ export default function App() {
       createdAt: new Date().toISOString(),
     };
 
-    // 2. Add placeholder assistant message
+    // 2. Add empty assistant message (steps will be added by timer)
     const assistantId = genId();
     const assistantMsg: ChatMessage = {
       id: assistantId,
       role: 'assistant',
       content: '',
-      steps: PENDING_STEPS,
+      steps: [],
       loading: true,
       createdAt: new Date().toISOString(),
     };
@@ -51,6 +46,27 @@ export default function App() {
     setMessages((prev) => [...prev, userMsg, assistantMsg]);
     setLoading(true);
 
+    // 3. Start fake step timer
+    const fakeSteps = createFakeSteps();
+    let currentIndex = 0;
+
+    timerRef.current = window.setInterval(() => {
+      setMessages((prev) =>
+        prev.map((m) => {
+          if (m.id !== assistantId) return m;
+          if (currentIndex >= fakeSteps.length) return m;
+          const updatedSteps = advanceFakeSteps(m.steps || [], fakeSteps, currentIndex);
+          currentIndex += 1;
+          return { ...m, steps: updatedSteps };
+        })
+      );
+
+      if (currentIndex >= fakeSteps.length) {
+        clearTimer();
+      }
+    }, 800);
+
+    // 4. Call backend
     try {
       const res = await runAgent({
         session_id: sessionId,
@@ -58,22 +74,20 @@ export default function App() {
         file_path: uploadedFile?.file_path || null,
       });
 
-      // Update session
+      clearTimer();
       setSessionId(res.session_id);
 
-      // Use backend steps or fallback
-      const steps = res.steps && res.steps.length > 0
+      const realSteps = res.steps && res.steps.length > 0
         ? res.steps.map((s) => ({ ...s, status: s.status || 'success' as const }))
         : fallbackSteps(task, res.answer);
 
-      // Replace assistant message with real data
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantId
             ? {
                 ...m,
                 content: res.answer,
-                steps,
+                steps: realSteps,
                 outputFile: res.output_file || null,
                 loading: false,
               }
@@ -81,14 +95,17 @@ export default function App() {
         )
       );
     } catch (err) {
+      clearTimer();
+      const errMsg = err instanceof Error ? err.message : '运行失败';
+
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantId
             ? {
                 ...m,
                 loading: false,
-                error: err instanceof Error ? err.message : '运行失败',
-                steps: [],
+                error: errMsg,
+                steps: markLastStepError(m.steps || [], errMsg),
               }
             : m
         )
@@ -99,6 +116,7 @@ export default function App() {
   };
 
   const handleNewChat = () => {
+    clearTimer();
     setMessages([]);
     setSessionId(null);
     setUploadedFile(null);

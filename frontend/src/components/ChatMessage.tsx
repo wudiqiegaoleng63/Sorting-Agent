@@ -26,23 +26,21 @@ export default function ChatMessage({ message }: Props) {
         {/* Assistant message */}
         {!isUser && (
           <>
-            {message.loading && (
-              <div className="msg-loading">
-                <span className="dot-pulse" /> Agent 正在处理...
-              </div>
-            )}
-
-            {message.error && (
-              <div className="msg-error">{message.error}</div>
-            )}
-
             {message.steps && message.steps.length > 0 && (
               <div className="msg-steps">
-                <div className="steps-title">Agent 执行过程</div>
+                <div className="steps-title">执行过程</div>
                 {message.steps.map((step, i) => (
                   <AgentStepCard key={i} step={step} />
                 ))}
               </div>
+            )}
+
+            {message.loading && message.steps && message.steps.length > 0 && (
+              <div className="msg-loading-hint">Agent 仍在处理，请稍候...</div>
+            )}
+
+            {message.error && (
+              <div className="msg-error">{message.error}</div>
             )}
 
             {!message.loading && message.content && (

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, HTTPException
 
 from app.mcp_client.excel_mcp_client import MCPConnectionError
 from app.schemas.agent_schema import AgentRunRequest, AgentRunResponse, MCPToolInfo, MCPToolsResponse
@@ -18,8 +18,10 @@ async def agent_run(req: AgentRunRequest):
 
 
 @router.get("/tools", response_model=MCPToolsResponse)
-async def list_mcp_tools(request: Request):
-    mcp_client = request.app.state.mcp_client
+async def list_mcp_tools():
+    from app.main import app
+
+    mcp_client = app.state.mcp_client
     if not mcp_client.connected:
         return MCPToolsResponse(
             connected=False,

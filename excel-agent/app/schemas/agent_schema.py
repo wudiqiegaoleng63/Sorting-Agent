@@ -2,15 +2,15 @@ from pydantic import BaseModel, Field
 
 
 class AgentRunRequest(BaseModel):
-    user_id: str | None = Field(None, description="User identifier")
-    session_id: str | None = Field(None, description="Session identifier for conversation continuity")
+    session_id: str | None = Field(None, description="Session identifier; auto-generated if omitted")
     task: str = Field(..., description="The task description for the agent")
     file_path: str | None = Field(None, description="Path to the Excel file (relative to uploads dir)")
 
 
 class AgentRunResponse(BaseModel):
+    session_id: str
     answer: str
-    session_id: str | None = None
+    history_count: int = 0
 
 
 class MCPToolInfo(BaseModel):

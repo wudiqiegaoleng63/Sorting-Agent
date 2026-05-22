@@ -22,6 +22,14 @@ class Settings(BaseSettings):
     mcp_excel_args: str = "excel-mcp-server,stdio"
     mcp_excel_env: dict[str, str] = {}
 
+    # Redis (short-term memory)
+    redis_host: str = "localhost"
+    redis_port: int = 6379
+    redis_db: int = 0
+    redis_password: str = ""
+    redis_memory_ttl: int = 7200
+    redis_max_messages: int = 20
+
     @property
     def mcp_excel_args_list(self) -> list[str]:
         return [a.strip() for a in self.mcp_excel_args.split(",") if a.strip()]

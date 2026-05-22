@@ -1,0 +1,188 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.card h3 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: #444;
+}
+
+/* Upload */
+.upload-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.upload-row input[type="file"] {
+  flex: 1;
+  min-width: 200px;
+  font-size: 0.9rem;
+}
+
+/* Textarea */
+textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  resize: vertical;
+  font-family: inherit;
+  margin-bottom: 8px;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #4a90d9;
+}
+
+/* Buttons */
+button, .download-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #4a90d9;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+button:hover:not(:disabled), .download-btn:hover {
+  background: #357abd;
+}
+
+button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+/* Messages */
+.success { color: #2e7d32; margin-top: 8px; font-size: 0.9rem; }
+.error { color: #d32f2f; margin-top: 8px; font-size: 0.9rem; }
+.hint { color: #888; font-size: 0.85rem; margin-top: 4px; }
+
+/* Steps */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.step {
+  border-left: 3px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 0 4px 4px 0;
+  background: #fafafa;
+}
+
+.step-input { border-left-color: #4a90d9; }
+.step-tool_selection { border-left-color: #f5a623; }
+.step-tool_result { border-left-color: #7b68ee; }
+.step-final { border-left-color: #2e7d32; }
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.step-icon { font-size: 1rem; }
+.step-title { font-weight: 600; font-size: 0.9rem; }
+.step-tool {
+  font-size: 0.8rem;
+  color: #f5a623;
+  background: #fef7e0;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.step-content {
+  font-size: 0.85rem;
+  color: #555;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.step-args {
+  font-size: 0.8rem;
+  background: #f0f0f0;
+  padding: 6px 8px;
+  border-radius: 3px;
+  overflow-x: auto;
+  margin-top: 4px;
+}
+
+/* Result */
+.result-answer {
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.result-download {
+  margin-bottom: 12px;
+}
+
+.result-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .container { padding: 12px 8px; }
+  .upload-row { flex-direction: column; }
+  .upload-row input[type="file"] { min-width: 100%; }
+}

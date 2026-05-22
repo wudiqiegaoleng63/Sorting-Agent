@@ -13,6 +13,7 @@ class AgentStep(BaseModel):
     content: str = ""
     tool_name: str | None = None
     arguments: dict | None = None
+    status: str = "success"
 
 
 class OutputFile(BaseModel):

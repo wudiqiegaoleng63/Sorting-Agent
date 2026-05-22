@@ -13,7 +13,8 @@ async def upload_file(file: UploadFile):
         raise HTTPException(status_code=400, detail="Only Excel/CSV files are supported")
 
     saved_path = await save_upload(file)
-    return {"filename": file.filename, "path": saved_path}
+    file_id = file.filename.rsplit(".", 1)[0]
+    return {"file_id": file_id, "filename": file.filename, "file_path": saved_path}
 
 
 @router.get("/download/{filename}")

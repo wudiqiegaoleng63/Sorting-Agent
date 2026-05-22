@@ -41,3 +41,11 @@ excel-agent/data/*
 
 # MCP server log
 excel-mcp.log
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Playwright
+.playwright-mcp/

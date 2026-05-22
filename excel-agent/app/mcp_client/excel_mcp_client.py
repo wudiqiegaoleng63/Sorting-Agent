@@ -44,12 +44,13 @@ class ExcelMCPClient:
         Raises MCPConnectionError on failure so callers can report clearly.
         """
         try:
+            args_list = settings.mcp_excel_args_list
             server_params = StdioServerParameters(
                 command=settings.mcp_excel_command,
-                args=settings.mcp_excel_args,
+                args=args_list,
                 env=settings.mcp_excel_env or None,
             )
-            cmd_str = f"{settings.mcp_excel_command} {' '.join(settings.mcp_excel_args)}"
+            cmd_str = f"{settings.mcp_excel_command} {' '.join(args_list)}"
             logger.info(f"Connecting to excel-mcp-server: {cmd_str}")
 
             # Open stdio transport
@@ -71,7 +72,7 @@ class ExcelMCPClient:
             self._tools = []
             raise MCPConnectionError(
                 f"Failed to connect to excel-mcp-server "
-                f"({settings.mcp_excel_command} {' '.join(settings.mcp_excel_args)}): {e}"
+                f"({settings.mcp_excel_command} {' '.join(settings.mcp_excel_args_list)}): {e}"
             ) from e
 
     async def disconnect(self):

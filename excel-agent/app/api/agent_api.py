@@ -13,6 +13,8 @@ async def agent_run(req: AgentRunRequest):
         return await run_agent(req)
     except MCPConnectionError as e:
         raise HTTPException(status_code=503, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e))
 
 
 @router.get("/tools", response_model=MCPToolsResponse)

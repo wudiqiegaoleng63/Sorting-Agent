@@ -13,6 +13,9 @@ async def run_agent(req: AgentRunRequest) -> AgentRunResponse:
     if not mcp_client.connected:
         raise MCPConnectionError("MCP server not connected. Check that excel-mcp-server is running.")
 
+    if agent is None:
+        raise RuntimeError("Agent not available. Check MODEL_API_KEY in .env.")
+
     # Build user message content
     parts = [req.task]
     if req.file_path:

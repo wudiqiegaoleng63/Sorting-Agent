@@ -19,8 +19,12 @@ class Settings(BaseSettings):
 
     # excel-mcp-server
     mcp_excel_command: str = "uvx"
-    mcp_excel_args: list[str] = ["excel-mcp-server", "stdio"]
+    mcp_excel_args: str = "excel-mcp-server,stdio"
     mcp_excel_env: dict[str, str] = {}
+
+    @property
+    def mcp_excel_args_list(self) -> list[str]:
+        return [a.strip() for a in self.mcp_excel_args.split(",") if a.strip()]
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 

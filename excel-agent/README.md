@@ -2,7 +2,7 @@
 
 Excel 智能自动化 Agent — 基于 Python + FastAPI + LangGraph + MCP + Redis + React。
 
-LLM 自动决策调用 excel-mcp-server 工具，无需手动编写工具选择逻辑。前端提供 ChatGPT 风格的聊天式交互界面。
+LLM 自动决策调用 excel-mcp-server 工具，无需手动编写工具选择逻辑。前端提供 ChatGPT 风格的聊天式交互界面，支持伪流式阶段输出。
 
 ## 架构
 
@@ -141,8 +141,11 @@ npm run dev
    - `按销售额降序排序，并导出结果文件`
    - `按地区统计销售额，生成汇总表`
 4. 按 Enter 发送，Agent 自动选择 MCP 工具执行
-5. 查看 Agent 执行过程和最终回答
-6. 如果生成了结果文件，点击下载
+5. 等待期间，聊天界面逐步展示 Agent 执行阶段（伪流式）：
+   - 正在分析任务 → 正在检查文件上下文 → 正在选择 MCP 工具 → 正在执行工具调用 → 正在整理工具结果 → 正在生成最终回复
+   - 每个阶段约 800ms 依次出现，当前阶段标记为"执行中..."
+   - 接口返回后，伪步骤替换为真实的工具调用过程
+6. 查看最终回答和结果文件下载链接
 
 同一个页面内支持连续对话，Agent 会记住上下文。
 
@@ -271,7 +274,8 @@ frontend/                     # 前端
 │   ├── types/
 │   │   └── agent.ts          # TypeScript 类型定义
 │   └── utils/
-│       └── id.ts             # 消息 ID 生成
+│       ├── id.ts             # 消息 ID 生成
+│       └── fakeSteps.ts      # 伪流式阶段输出工具函数
 ├── .env.example
 ├── vite.config.ts            # Vite + API proxy
 └── package.json
@@ -301,3 +305,5 @@ frontend/                     # 前端
 - 文件路径限制在项目目录内，防止任意文件访问
 - Redis 异常降级为空历史，不阻塞 Agent 主流程
 - 前端仅展示公开的 Agent 执行过程，不暴露思维链、系统 Prompt 或 API Key
+- 前端伪流式输出：等待后端响应期间逐步展示执行阶段，接口返回后替换为真实步骤
+- 不使用 SSE / WebSocket，伪流式纯前端 setInterval 实现
